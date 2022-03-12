@@ -94,3 +94,19 @@ def delete_comment(comment_id,blog_id):
     db.session.commit()
     flash('Deleted!')
     return redirect(url_for('.comment', blog_id = blog_id,comment_id=comment_id))
+
+@main.route("/update_post/<int:blog_id>",methods= ['POST','GET'])
+@login_required
+def update_post(blog_id):
+    blog = Blog.query.get(blog_id)
+    form = UpdateBlog()
+    if form.validate_on_submit():
+        blog.title =form.title.data
+        blog.post = form.post.data
+        db.session.commit()
+        flash('Post updated!',)
+        return redirect(url_for('main.index',blog_id=blog_id))
+    elif request.method == 'GET':
+        form.title.data = blog.title
+        form.post.data = blog.post
+    return render_template('new_blog.html',form=form, title='Update Blog')
