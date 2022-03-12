@@ -37,12 +37,23 @@ class Blog(db.Model):
     date_posted = db.Column(db.DateTime, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     
-    
-    
-
     def save_blog(self):
         db.session.add(self)
         db.session.commit()
 
     def __repr__(self):
-        return f'Pitch {self.word}'
+        return f'Blog {self.post}'
+
+class Comment(db.Model):
+    __tablename__ = 'comments'
+    id = db.Column(db.Integer,primary_key = True)
+    comment = db.Column(db.String (255), index=True)
+    blog_id = db.Column(db.Integer,db.ForeignKey("blogs.id"))
+    user_id = db.Column(db.Integer,db.ForeignKey("users.id"))
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def __repr__(self):
+        return f'comment:{self.comment}'
