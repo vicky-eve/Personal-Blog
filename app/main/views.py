@@ -85,3 +85,12 @@ def delete_post(blog_id):
     db.session.commit()
     flash('Succsessfully deleted!')
     return redirect(url_for('main.index', blog_id=blog_id))
+
+@main.route("/delete_comment/<int:blog_id>/<int:comment_id>",methods= ['POST'])
+@login_required
+def delete_comment(comment_id,blog_id):
+    comment = Comment.query.filter_by(id=comment_id).first()
+    db.session.delete(comment)
+    db.session.commit()
+    flash('Deleted!')
+    return redirect(url_for('.comment', blog_id = blog_id,comment_id=comment_id))
