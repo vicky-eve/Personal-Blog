@@ -10,6 +10,7 @@ class User(db.Model, UserMixin):
     pass_secure = db.Column(db.String(255))
     password_hash = db.Column(db.String(255))
     email = db.Column(db.String(255),unique = True,index = True)
+    bio = db.Column(db.String(255))
     blog= db.relationship('Blog',backref = 'user',lazy="dynamic")
     comment= db.relationship('Comment',backref = 'user',lazy="dynamic")
 
@@ -35,6 +36,7 @@ class User(db.Model, UserMixin):
 class Blog(db.Model):
     __tablename__ = 'blogs'
     id = db.Column(db.Integer,primary_key = True)
+    title = db.Column(db.String(255))
     post = db.Column(db.Text())
     date_posted = db.Column(db.DateTime, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
