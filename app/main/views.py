@@ -76,3 +76,12 @@ def update_profile(uname):
         return redirect(url_for('.profile',uname=user.username))
 
     return render_template('profile/update.html',form =form)
+
+@main.route("/delete_post/<int:blog_id>/delete",methods= ['POST'])
+@login_required
+def delete_post(blog_id):
+    blog_delete = Blog.query.get(blog_id)
+    db.session.delete(blog_delete)
+    db.session.commit()
+    flash('Succsessfully deleted!')
+    return redirect(url_for('main.index', blog_id=blog_id))
