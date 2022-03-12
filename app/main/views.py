@@ -12,3 +12,14 @@ def profile(username):
         abort(404)
 
     return render_template("profile/profile.html", user = user,post=post)
+
+@main.route('/')
+def index():
+    blogs = Blog.query.all()
+    interview = Pitch.query.filter_by(category = 'Interview').all()
+    product = Pitch.query.filter_by(category = 'Product').all() 
+    project = Pitch.query.filter_by(category = 'Project').all()
+    promotion = Pitch.query.filter_by(category = 'Promotion').all() 
+    all_pitches = Pitch.query.order_by(Pitch.date_posted).all()
+    
+    return render_template('index.html',blogs = blogs)
