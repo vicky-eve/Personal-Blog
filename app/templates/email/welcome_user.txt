@@ -1,0 +1,3 @@
+Hello {{user.username}}
+Welcome to BlogAway!
+Get to make your most desired blogs!
