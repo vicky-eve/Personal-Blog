@@ -10,6 +10,8 @@ class User(db.Model, UserMixin):
     pass_secure = db.Column(db.String(255))
     password_hash = db.Column(db.String(255))
     email = db.Column(db.String(255),unique = True,index = True)
+    blog= db.relationship('Blog',backref = 'user',lazy="dynamic")
+    comment= db.relationship('Comment',backref = 'user',lazy="dynamic")
 
     @property
     def password(self):
@@ -36,6 +38,7 @@ class Blog(db.Model):
     post = db.Column(db.Text())
     date_posted = db.Column(db.DateTime, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    comment= db.relationship('Comment',backref = 'blog',lazy="dynamic")
     
     def save_blog(self):
         db.session.add(self)
