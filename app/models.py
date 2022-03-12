@@ -16,6 +16,7 @@ class User(db.Model, UserMixin):
     password_hash = db.Column(db.String(255))
     email = db.Column(db.String(255),unique = True,index = True)
     bio = db.Column(db.String(255))
+    profile_pic_path = db.Column(db.String())
     blog= db.relationship('Blog',backref = 'user',lazy="dynamic")
     comment= db.relationship('Comment',backref = 'user',lazy="dynamic")
 
@@ -67,3 +68,21 @@ class Comment(db.Model):
 
     def __repr__(self):
         return f'comment:{self.comment}'
+
+class Quote:
+    def __init__(self,author,quote):
+        self.author=author
+        self.quote=quote
+        
+class Subscribe(db.Model):
+    __tablename__ = "subscribers"
+    id=db.Column(db.Integer,primary_key=True)
+    email = db.Column(db.String(255),index=True)
+
+    def save_subscriber(self):
+        db.session.add(self)
+        db.session.commit()
+
+     
+    def __repr__(self):
+        return f'subscribe:{self.email}'
