@@ -1,12 +1,14 @@
 from flask import render_template,request,redirect,url_for,abort
 from . import main
 from flask_login import login_required,current_user
-from models import User, Blog
+from models import User, Blog, Quote,Subscribe
+from .forms import UpdateProfile,BlogForm,CommentForm,UpdateBlog,SubscribeForm
+from ..request import get_quotes
 
-@main.route('/user/<username>')
+@main.route('/user/<uname>')
 @login_required
-def profile(username):
-    user = User.query.filter_by(username = username).first()
+def profile(uname):
+    user = User.query.filter_by(username = uname).first()
     post = Blog.query.filter_by(user = current_user).all()
     if user is None:
         abort(404)
@@ -16,10 +18,15 @@ def profile(username):
 @main.route('/')
 def index():
     blogs = Blog.query.all()
-    interview = Pitch.query.filter_by(category = 'Interview').all()
-    product = Pitch.query.filter_by(category = 'Product').all() 
-    project = Pitch.query.filter_by(category = 'Project').all()
-    promotion = Pitch.query.filter_by(category = 'Promotion').all() 
-    all_pitches = Pitch.query.order_by(Pitch.date_posted).all()
+    quotes = get_quotes()
+    form = SubscribeForm()
+    if form.validate_on_submit():
+        email = form.email.data
+
+        new_subscriber=Subscribe(email=email)
+        new_subscriber.save_subscriber()
+        mail_message("You are now subscribed to BlogAway","email/subscribe",new_subscriber.email,new_subscriber=new_subscriber)
+        flash('Sucessfully subscribed')
+        return redirect(url_for('main.index'))
     
-    return render_template('index.html',blogs = blogs)
+    return render_template('index.html', blogs = blogs,quotes =quotes,user=current_user, form = form)
