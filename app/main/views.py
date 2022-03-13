@@ -1,7 +1,7 @@
 from flask import render_template,request,redirect,url_for,abort, flash
 from . import main
 from flask_login import login_required,current_user
-from models import User, Blog, Quote,Subscribe, Comment
+from ..models import User, Blog, Quote,Subscribe, Comment
 from .forms import UpdateProfile,BlogForm,CommentForm,UpdateBlog,SubscribeForm
 from ..request import get_quotes
 from .. import db
@@ -110,3 +110,9 @@ def update_post(blog_id):
         form.title.data = blog.title
         form.post.data = blog.post
     return render_template('new_blog.html',form=form, title='Update Blog')
+
+@main.route('/recent',methods = ['POST','GET'])
+def recent():
+    blogs = Blog.query.order_by(Blog.time.desc()).all()
+    
+    return render_template('recent.html', blogs = blogs)
