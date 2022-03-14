@@ -1,1 +1,65 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %}  {% block content %}
+<div class="container">
+    <div class="col-sm-12 quotes">
+        <div class="panel panel-default">
+          <div class="card">
+            <div class="panel-body quote">
+              <blockquote class="blockquote mb-0 card-body"><br>
+                <p>{{quotes.quote}}</p>
+                <footer class="blockquote-footer">
+                  <cite title="Source Title" style="color: black;">{{quotes.author| capitalize}}</cite>
+    
+                </footer>
+    
+              </blockquote>
+            </div>
+    
+          </div>
+        </div>
+      </div>
+</div>
+
+{% for blog in blogs %}
+  <div class="col-md-4 mb-5 ">
+    <div class="text-centre">
+      <div class="card text-white mb-3" >
+        <h3 class="card-title">{{blog.title}}</h3>
+        <div class="card-body">
+
+          <p class="card-text">{{blog.post}}</p>
+          <p class="card-text">{{blog.created_by| capitalize}}</p>
+          <p class="card-text">{{blog.date_posted.strftime('%Y-%m-%d')}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+  <div class="container row text-center whaw">
+    <div class="card col-md-12">
+       
+        <div class="col-md-12">
+          
+       
+        <form action="{{ url_for('main.subscribe')}}" class="search text-center">
+            <div class="input-group">
+                <input type="email" class="form-control" placeholder="Enter your Email" name="email" required><br>
+                <div class="input-group-append"><br>
+                    <button class="btn-success" type="submit" >
+                       Subscribe
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+  </div>
+  
+<style>
+  body{
+    background-color: yellowgreen;
+  }
+  .whaw{
+    margin-top: 5%;
+  }
+</style>
+
+{% endblock %}

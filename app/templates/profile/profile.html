@@ -31,8 +31,8 @@
                 <p> {{user.username| capitalize}} has no bio </p>
                 {% endif %}
                 {% if user == current_user %}
-                <a href="{{url_for('main.update_profile',username=user.username)}}">Click Here to Update Bio</a>
-                <form class="mt-4" action="{{url_for('main.update_pic',username=user.username)}}" method="post"
+                <a href="{{url_for('main.update_profile',uname=user.username)}}">Click Here to Update Bio</a>
+                <form class="mt-4" action="{{url_for('main.update_pic',uname=user.username)}}" method="post"
                     enctype="multipart/form-data">
                     <p class="title ">Update Profile photo</p>
                     <input type="file" name="photo" class="form-control" required><br>

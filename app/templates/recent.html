@@ -24,7 +24,7 @@
             <div class="media-body">
                 <div class="blog-details">
                     <p>Blog by: <strong>{{ blog.user.username }}</strong> </p>
-                    <small class="text-muted">Posted on {{ blog.time.strftime('%Y-%m-%d') }}</small>
+                    <small class="text-muted">Posted on {{ blog.date_posted.strftime('%Y-%m-%d') }}</small>
                 </div>
                 <h5 class="blog-title">{{ blog.title }}</h5>
                 <p class="blog-article">{{ blog.post }}</p>

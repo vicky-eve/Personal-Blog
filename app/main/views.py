@@ -3,9 +3,20 @@ from . import main
 from flask_login import login_required,current_user
 from ..models import User, Blog, Quote,Subscribe, Comment
 from .forms import UpdateProfile,BlogForm,CommentForm,UpdateBlog,SubscribeForm
-from ..request import get_quotes
-from .. import db
+from ..requests import get_quote
+from .. import db, photos
+from app.email import mail_message
 
+@main.route('/')
+def home():
+    '''
+    View root function that returns index template
+    '''
+    quotes = get_quote()
+    blog_form = BlogForm()
+    all_blogs = Blog.query.order_by(Blog.date_posted.desc()).all()
+    
+    return render_template('index.html', quotes=quotes, blogs = all_blogs)
 
 @main.route('/user/<uname>')
 @login_required
@@ -17,21 +28,33 @@ def profile(uname):
 
     return render_template("profile/profile.html", user = user,post=post)
 
-@main.route('/')
+@main.route('/',methods = ['POST','GET'])
 def index():
     blogs = Blog.query.all()
-    quotes = get_quotes()
+    quotes = get_quote()
     form = SubscribeForm()
     if form.validate_on_submit():
         email = form.email.data
 
         new_subscriber=Subscribe(email=email)
         new_subscriber.save_subscriber()
+        mail_message("You're now subscribed","email/subscribe",new_subscriber.email,new_subscriber=new_subscriber)
         flash('Successfull subscription!')
         return redirect(url_for('main.index'))
     
     return render_template('index.html', blogs = blogs,quotes =quotes,user=current_user, form = form)
 
+@main.route('/subscribe', methods=['GET', 'POST'])
+def subscribe():
+    """
+         subscribe function that subscribes the user to the post
+    """
+    email = request.args.get('email')
+    new_subscriber = Subscribe(email=email)
+    db.session.add(new_subscriber)
+    db.session.commit()
+    flash('Email submitted successfully', 'success')
+    return redirect(url_for('main.index')) 
 
 @main.route('/comment/<int:blog_id>', methods = ['POST','GET'])
 @login_required
@@ -77,6 +100,17 @@ def update_profile(uname):
 
     return render_template('profile/update.html',form =form)
 
+@main.route('/user/<uname>/update/pic',methods= ['POST'])
+@login_required
+def update_pic(uname):
+    user = User.query.filter_by(username = uname).first()
+    if 'photo' in request.files:
+        filename = photos.save(request.files['photo'])
+        path = f'photos/{filename}'
+        user.profile_pic_path = path
+        db.session.commit()
+    return redirect(url_for('main.profile',uname=uname))
+
 @main.route("/delete_post/<int:blog_id>/delete",methods= ['POST'])
 @login_required
 def delete_post(blog_id):
@@ -113,6 +147,6 @@ def update_post(blog_id):
 
 @main.route('/recent',methods = ['POST','GET'])
 def recent():
-    blogs = Blog.query.order_by(Blog.time.desc()).all()
+    blogs = Blog.query.order_by(Blog.date_posted.desc()).all()
     
     return render_template('recent.html', blogs = blogs)

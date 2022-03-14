@@ -32,7 +32,7 @@ def login():
 
         flash('Invalid username or Password')
 
-    title = "Pitch Login"
+    title = "Blog Login"
     return render_template('auth/login.html',login_form = login_form,title=title)
 
 @auth.route('/logout')
