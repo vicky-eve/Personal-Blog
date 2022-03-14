@@ -1,0 +1,64 @@
+{% extends 'base.html'%}
+{% block styles%}
+{{ super() }}
+<link rel="stylesheet" href="{{url_for('static',filename='css/style.css')}}">
+{% endblock %}
+
+{% block content %}
+<div class="container p-3">
+    <div class="row">
+        <div class="col-md-4">
+            <h5 class="title">Profile</h5>
+            <div class="content-section">
+                <div class="media">
+                    {% if user.profile_pic_path %}
+
+                    <img src="{{url_for('static',filename=user.profile_pic_path)}}" alt=""
+                        class="img-thumbnail rounded-circle account-img">
+
+                    {%else%}
+                    <img src="{{url_for('static', filename='photos/default.png')}}" alt=""
+                        class="img-thumbnail rounded-circle account-img">
+                    {% endif %}
+                    <div class="media-body">
+                        <h2 class="account-heading">{{ current_user.username }}</h2>
+                        <p class="text-secondary">{{ current_user.email }}</p>
+                    </div>
+                </div>
+                {% if user.bio %}
+                <p> {{user.bio}}</p>
+                {%else%}
+                <p> {{user.username| capitalize}} has no bio </p>
+                {% endif %}
+                {% if user == current_user %}
+                <a href="{{url_for('main.update_profile',username=user.username)}}">Click Here to Update Bio</a>
+                <form class="mt-4" action="{{url_for('main.update_pic',username=user.username)}}" method="post"
+                    enctype="multipart/form-data">
+                    <p class="title ">Update Profile photo</p>
+                    <input type="file" name="photo" class="form-control" required><br>
+                    <input type="submit" class="btn btn-sm btn-outline-primary" value="Update">
+                </form>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-md-1"></div>
+        <div class="col-md-6">
+            <h5 class="title">My Blogs</h5>
+            {% if user == current_user %}
+            {%if posts%}
+                {{ macro.display(posts) }}
+            {%else%}
+            <div class="content-section">
+                Sorry, no blogs  found.
+            </div>
+
+            {%endif%}
+           
+            {% endif %}
+        </div>
+    </div>
+</div>
+<footer class="fixed-bottom">
+    <p class="text-center text-white"><i>@Copyright, BlogAWay 2022</i></p>
+</footer>
+{% endblock %}
