@@ -1,0 +1,82 @@
+
+{% extends 'base.html'%}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% block styles%}
+{{ super() }}
+<link rel="stylesheet" href="{{url_for('static',filename='css/style.css')}}">
+{% endblock %}
+{% block content %}
+<div class="container pt-3">
+    <div class="row">
+        {% if comments %}
+        <div class="col-md-6">
+            <h3 class="text-center title italic">Blog comments</h3>
+            {% for message in get_flashed_messages() %}
+            <div class="alert alert-info">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% for comment in comments %}
+            <article class="media content-section">
+                <div class="media-body">
+                  <div class="blog-details">
+                    <a class="mr-2" href="#">{{ comment.user.username }}</a>
+                  </div>
+                  <h5 class="blog-title">{{ comment.blog.title }}</h5>
+                  <p class="blog-article">{{ comment.comment }}</p>
+                  <div>
+                    <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal"
+                      data-target=".deleteModal-modal-sm">Delete</button>
+                  </div>
+                </div>
+                <div class="modal fade deleteModal-modal-sm" id="" tabindex="-1" role="dialog"
+                aria-labelledby="deleteModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-sm" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <p class="modal-title" id="deleteModalLabel">Sure to delete?</p>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Dismiss</button>
+                            <form action="{{ url_for('main.delete_comment',blog_id=blog.id,comment_id = comment.id) }}" method="POST">
+                                <input class="btn btn-danger btn-sm" type="submit" value="Delete">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+              </article>
+            
+            {% endfor %}
+        </div>
+       
+        <div class="col-md-2"></div>
+        <div class="col-md-4 pt-3">
+            {{wtf.quick_form(form ,button_map={'submit':'info'})}}
+        </div>
+    </div>
+    {%else%}
+    <div class="no-comment col-md-5">
+        <h3 class="text-center title italic">Comments</h3>
+        <div class="card">
+            <div class="card-body">
+                <p class="card-title">No Comments found</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2"></div>
+    <div class="col-md-5">
+        {{wtf.quick_form(form, button_map={'submit':'info'})}}
+    </div>
+
+    {%endif%}
+</div>
+<footer class="fixed-bottom">
+    <p class="text-center text-white"><i>@Copyright, BlogAway 2022</i></p>
+</footer>
+
+{% endblock%}
