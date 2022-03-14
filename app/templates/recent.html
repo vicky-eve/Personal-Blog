@@ -1,0 +1,65 @@
+
+{% extends 'base.html'%}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% import 'macros.html' as macro%}
+<!-- Styles block -->
+{% block styles%}
+{{ super() }}
+<link rel="stylesheet" href="{{url_for('static',filename='css/style.css')}}">
+{% endblock %}
+<!-- Content block -->
+{% block content %}
+    <div class="container mt-2 pl-2">
+        <h3 class="title">Recent Posts</h3>
+        {% for blog in blogs %}
+        <article class="media content-section col-md-8">
+                {% if blog.user.profile_pic_path %}
+                <img src="{{url_for('static',filename=blog.user.profile_pic_path)}}" alt=""
+                    class="rounded-circle blog-profile">  
+                {%else%}
+                <img src="{{url_for('static', filename='photos/default.png')}}" alt=""
+                    class="rounded-circle blog-profile">
+                {% endif %}               
+
+            <div class="media-body">
+                <div class="blog-details">
+                    <p>Blog by: <strong>{{ blog.user.username }}</strong> </p>
+                    <small class="text-muted">Posted on {{ blog.time.strftime('%Y-%m-%d') }}</small>
+                </div>
+                <h5 class="blog-title">{{ blog.title }}</h5>
+                <p class="blog-article">{{ blog.post }}</p>
+                <span>
+                    <a class="btn btn-info btn-sm  mb-1 comment-button ml-1"
+                    href="{{url_for('main.comment',blog_id = blog.id)}}">Comment</a>
+                    <a class="ml-2" href="{{url_for('main.comment',blog_id = blog.id)}}"><span
+                            style="font-size: 1em;  color:black"><i class="fas fa-comment-alt"></i></i></span>
+                        {{blog.comment.count()}} Comments</a>
+                   
+                </span>
+            </div>
+        </article>
+
+        <div class="modal fade deleteModal-modal-sm" id="" tabindex="-1" role="dialog"
+            aria-labelledby="deleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-sm" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <p class="modal-title" id="deleteModalLabel">Sure to delete?</p>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Dismiss</button>
+                        <form action="{{ url_for('main.delete_post', blog_id = blog.id) }}" method="POST">
+                            <input class="btn btn-danger btn-sm" type="submit" value="Delete">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </article>
+        {%endfor%}
+    </div>
+
+{% endblock%}
