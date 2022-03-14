@@ -11,7 +11,7 @@ For the application to run, you have to install:
 
 * open terminal
 * git clone this repository https://github.com/vicky-eve/Personal-Blog
-* open Pitches directory
+* open Blog directory
 * use a code editor e.g vs-code
 
 # Project description
