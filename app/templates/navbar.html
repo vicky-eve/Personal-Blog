@@ -12,8 +12,8 @@
         <ul class="nav navbar-nav">
           <li class="active"><a href="#">Profile</a></li>
           <li><a href="#">Quotes</a></li>
-          <li><a href="#">Recent Posts</a></li>
-          <li><a href="#">Blog</a></li>
+          <a class="nav-link active" href="{{url_for('main.recent')}}">Recent Posts</a>
+          <a class="nav-link active" href="{{url_for('main.new_blog')}}"> Blog</a>
         </ul>
         <ul class="nav navbar-nav navbar-right">
             {% if current_user.is_authenticated %}
