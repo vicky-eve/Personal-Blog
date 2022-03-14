@@ -1,0 +1,55 @@
+<link rel="stylesheet" href="{{url_for('static',filename='css/style.css')}}">
+{% macro display(blogs) %}
+<div class="">
+  {% if blogs %}
+  {% for blog in blogs %}
+  <article class="media content-section">
+    <div class="media-body">
+      <div class="blog-details">
+        <small class="text-muted">Posted on {{ blog.time.strftime('%Y-%m-%d') }}</small>
+        {% if user == current_user %}
+        <span class="pl-2">
+          <a class="btn btn-info btn-sm mt-1 mb-1" href="{{ url_for('main.update_post', blog_id = blog.id) }}">Update</a>
+          <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal"
+            data-target=".deleteModal-modal-sm">Delete</button>
+        </span>
+        {% endif %}
+      </div>
+      <h5 class="blog-title">{{ blog.title }}</h5>
+      <p class="blog-article">{{ blog.post }}</p>
+
+      <a href="{{url_for('main.comment',blog_id = blog.id)}}"><span style="font-size: 1em;  color:black"><i class="fas fa-comment-alt"></i></i></span> {{blog.comment.count()}} Comments</a>
+    </div>
+  </article>
+  <!-- Modal -->
+  <div class="modal fade deleteModal-modal-sm" id="" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <p class="modal-title" id="deleteModalLabel">Sure  to delete?</p>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Dismiss</button>
+          <form action="{{ url_for('main.delete_post', blog_id = blog.id) }}" method="POST">
+            <input class="btn btn-danger btn-sm" type="submit" value="Delete">
+        </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  </article>
+  {% endfor %}
+  {% else %}
+  <div class="card">
+    <div class="card-body">
+
+      <p class="card-title">No blogs yet</p>
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endmacro %}
